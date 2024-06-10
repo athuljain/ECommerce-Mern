@@ -231,11 +231,7 @@ export default function SpecificProductPage() {
           <img src={specificProduct.image} alt="product" />
           <p>{specificProduct.description}</p>
           <p>{specificProduct.price}</p>
-          {inCart ? (
-            <button onClick={removeFromCart}>Remove from Cart</button>
-          ) : (
-            <button onClick={addToCart}>Add to Cart</button>
-          )}
+          
         </>
       ) : (
         <p>Product not found</p>
