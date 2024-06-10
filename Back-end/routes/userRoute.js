@@ -19,6 +19,7 @@ app.post("/login", user.userLogin, userMiddleware); // No userMiddleware here
 app.get("/getProducts", userMiddleware, user.userGetProducts);
 app.get("/products/:id", userMiddleware, user.specificProduct);
 app.get("/products/category/:category", userMiddleware, user.getCategoryWise);
-
+app.post("/addToCart", user.addToCart); 
+app.get("/cart", user.getCart);
 
 module.exports = app;

@@ -126,16 +126,72 @@ const specificProduct = async (req, res) => {
   }
 };
 
+// Add to Cart
+const addToCart = async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const token = req.cookies.token || req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized access" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Add product to user's cart if it's not already there
+    if (!user.cart.includes(productId)) {
+      user.cart.push(productId);
+      await user.save();
+    }
+
+    res.status(200).json({ message: "Product added to cart", cart: user.cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error", errorMessage: error.message });
+  }
+};
+
 // Get Cart
+const getCart = async (req, res) => {
+  try {
+    const token = req.cookies.token || req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized access" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email }).populate('cart');
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ cart: user.cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error", errorMessage: error.message });
+  }
+};
+
 
 module.exports = {
   userRegister,
   userLogin,
   userGetProducts,
   specificProduct,
-  // addToCart,
+  addToCart,
   getCategoryWise,
-  // getCart,
-  // removeFromCart,
+  getCart
 };
 
