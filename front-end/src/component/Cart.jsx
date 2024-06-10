@@ -3,7 +3,7 @@ import axios from "axios";
 import { myContext } from "../Context";
 
 export default function Cart() {
-  const { products, setProducts, cartItems, setCartItems } = useContext(myContext);
+  const {  cartItems, setCartItems } = useContext(myContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 

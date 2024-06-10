@@ -6,7 +6,7 @@ import { myContext } from "../Context";
 import "./Style/Home.css";
 
 export default function Home() {
-  const { products, setProducts, isLoggedIn, setIsLoggedIn } = useContext(myContext);
+  const { products, setProducts,  setIsLoggedIn } = useContext(myContext);
   const [loading, setLoading] = useState(false);
   const nav = useNavigate();
 
