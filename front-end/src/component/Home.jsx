@@ -1,5 +1,4 @@
 
-
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,10 +6,8 @@ import { myContext } from "../Context";
 import "./Style/Home.css";
 
 export default function Home() {
-  const { products, setProducts, cartItems, setCartItems } = useContext(myContext);
+  const { products, setProducts, isLoggedIn, setIsLoggedIn } = useContext(myContext);
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  console.log(isLoggedIn);
   const nav = useNavigate();
 
   const fetchProducts = useCallback(async () => {
@@ -22,18 +19,13 @@ export default function Home() {
           withCredentials: true,
         }
       );
-      const updatedProducts = response.data.allProducts.map(product => ({
-        ...product,
-        inCart: cartItems.includes(product._id)
-      }));
-      
-      setProducts(updatedProducts);
+      setProducts(response.data.allProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
-  }, [setProducts, cartItems]);
+  }, [setProducts]);
 
   useEffect(() => {
     fetchProducts();
@@ -42,9 +34,9 @@ export default function Home() {
     if (token) {
       setIsLoggedIn(true);
     }
-  }, [fetchProducts]);
+  }, [fetchProducts, setIsLoggedIn]);
 
-  const handleAddToCart = async (productId) => {
+  const addToCart = async (productId) => {
     try {
       const response = await axios.post(
         "http://localhost:5000/user/addToCart",
@@ -54,7 +46,11 @@ export default function Home() {
         }
       );
       if (response.status === 200) {
-        setCartItems(prevCartItems => [...prevCartItems, productId]);
+        // Toggle inCart property of the product
+        const updatedProducts = products.map(product =>
+          product._id === productId ? { ...product, inCart: true } : product
+        );
+        setProducts(updatedProducts);
         alert("Product added to cart successfully");
       }
     } catch (error) {
@@ -67,30 +63,29 @@ export default function Home() {
     }
   };
 
-  const handleRemoveFromCart = async (productId) => {
+  const removeFromCart = async (productId) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/user/removeFromCart",
-        { productId },
-        {
-          withCredentials: true,
-        }
+      const response = await axios.delete(`http://localhost:5000/user/cart`, {
+        data: { productId },
+        withCredentials: true,
+      });
+      // Toggle inCart property of the product
+      const updatedProducts = products.map(product =>
+        product._id === productId ? { ...product, inCart: false } : product
       );
-      if (response.status === 200) {
-        setCartItems(prevCartItems => prevCartItems.filter(item => item !== productId));
-        alert("Product removed from cart successfully");
-      }
-    } catch (error) {
-      console.error("Error removing product from cart:", error);
+      setProducts(updatedProducts);
+      alert("Product removed from cart successfully");
+    } catch (err) {
+      console.error("Error removing product from cart:", err);
       alert("Failed to remove product from cart");
     }
   };
 
-  const handleCartButtonClick = (product) => {
+  const handleCartAction = async (product) => {
     if (product.inCart) {
-      handleRemoveFromCart(product._id);
+      await removeFromCart(product._id);
     } else {
-      handleAddToCart(product._id);
+      await addToCart(product._id);
     }
   };
 
@@ -142,7 +137,7 @@ export default function Home() {
                 <h5 className="ProductDes">{product.description}</h5>
                 <h4 className="ProductPrice">{product.price}</h4>
                 <button
-                  onClick={() => handleCartButtonClick(product)}
+                  onClick={() => handleCartAction(product)}
                 >
                   {product.inCart ? "Remove from Cart" : "Add to Cart"}
                 </button>
@@ -158,3 +153,4 @@ export default function Home() {
     </div>
   );
 }
+
