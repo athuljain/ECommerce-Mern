@@ -184,6 +184,41 @@ const getCart = async (req, res) => {
   }
 };
 
+// Remove from Cart
+const removeFromCart = async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const token = req.cookies.token || req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized access" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if product exists in the user's cart
+    const index = user.cart.indexOf(productId);
+    if (index === -1) {
+      return res.status(404).json({ error: "Product not found in cart" });
+    }
+
+    // Remove the product from the user's cart
+    user.cart.splice(index, 1);
+    await user.save();
+
+    res.status(200).json({ message: "Product removed from cart", cart: user.cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error", errorMessage: error.message });
+  }
+};
+
+
 
 module.exports = {
   userRegister,
@@ -192,6 +227,7 @@ module.exports = {
   specificProduct,
   addToCart,
   getCategoryWise,
-  getCart
+  getCart,
+  removeFromCart
 };
 
