@@ -75,7 +75,7 @@ function App() {
     isLoggedIn, setIsLoggedIn
   };
   //console.log("front end token",token);
-
+  console.log("cart",cartItems);
   return (
     <div className="App">
       <BrowserRouter>

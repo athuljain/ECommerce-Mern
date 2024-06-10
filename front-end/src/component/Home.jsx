@@ -10,6 +10,7 @@ export default function Home() {
   const { products, setProducts, cartItems, setCartItems } = useContext(myContext);
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log(isLoggedIn);
   const nav = useNavigate();
 
   const fetchProducts = useCallback(async () => {
@@ -43,6 +44,55 @@ export default function Home() {
     }
   }, [fetchProducts]);
 
+  const handleAddToCart = async (productId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/user/addToCart",
+        { productId },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        setCartItems(prevCartItems => [...prevCartItems, productId]);
+        alert("Product added to cart successfully");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert("Product already in cart");
+      } else {
+        console.error("Error adding product to cart:", error);
+        alert("Failed to add product to cart");
+      }
+    }
+  };
+
+  const handleRemoveFromCart = async (productId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/user/removeFromCart",
+        { productId },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        setCartItems(prevCartItems => prevCartItems.filter(item => item !== productId));
+        alert("Product removed from cart successfully");
+      }
+    } catch (error) {
+      console.error("Error removing product from cart:", error);
+      alert("Failed to remove product from cart");
+    }
+  };
+
+  const handleCartButtonClick = (product) => {
+    if (product.inCart) {
+      handleRemoveFromCart(product._id);
+    } else {
+      handleAddToCart(product._id);
+    }
+  };
 
   const handleGetProductsByCategory = async (category) => {
     try {
@@ -91,7 +141,11 @@ export default function Home() {
                 <h4 className="ProductTitle">{product.title}</h4>
                 <h5 className="ProductDes">{product.description}</h5>
                 <h4 className="ProductPrice">{product.price}</h4>
-            
+                <button
+                  onClick={() => handleCartButtonClick(product)}
+                >
+                  {product.inCart ? "Remove from Cart" : "Add to Cart"}
+                </button>
               </div>
             ))}
           </div>
