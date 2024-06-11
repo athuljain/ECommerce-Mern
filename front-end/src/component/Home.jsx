@@ -69,6 +69,7 @@ export default function Home() {
         data: { productId },
         withCredentials: true,
       });
+      console.log("resp",response);
       // Toggle inCart property of the product
       const updatedProducts = products.map(product =>
         product._id === productId ? { ...product, inCart: false } : product
