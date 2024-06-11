@@ -1,5 +1,6 @@
 
 
+
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -9,7 +10,6 @@ const Laptop = () => {
   const { products, setProducts } = useContext(myContext);
   const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useState(() => {
-    // Get cart items from localStorage on component mount
     const storedCartItems = localStorage.getItem("cartItems");
     return storedCartItems ? JSON.parse(storedCartItems) : [];
   });
@@ -27,10 +27,10 @@ const Laptop = () => {
           withCredentials: true,
         }
       );
-      // Toggle inCart property for products based on cartItems
+
       const updatedProducts = response.data.map(product => ({
         ...product,
-        inCart: cartItems.includes(product._id)
+        inCart: cartItems.includes(product._id),
       }));
       setProducts(updatedProducts);
     } catch (error) {
@@ -58,10 +58,9 @@ const Laptop = () => {
         }
       );
       if (response.status === 200) {
-        // Update local cartItems state
         const updatedCartItems = [...cartItems, productId];
         setCartItems(updatedCartItems);
-        // Update inCart property of the product
+
         const updatedProducts = products.map(product =>
           product._id === productId ? { ...product, inCart: true } : product
         );
@@ -84,11 +83,10 @@ const Laptop = () => {
         data: { productId },
         withCredentials: true,
       });
-      console.log("resp",response);
-      // Update local cartItems state
+
       const updatedCartItems = cartItems.filter(item => item !== productId);
       setCartItems(updatedCartItems);
-      // Update inCart property of the product
+
       const updatedProducts = products.map(product =>
         product._id === productId ? { ...product, inCart: false } : product
       );
@@ -100,7 +98,6 @@ const Laptop = () => {
     }
   };
 
-  // Update localStorage whenever cartItems change
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);

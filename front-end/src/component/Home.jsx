@@ -1,4 +1,5 @@
 
+
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -6,7 +7,7 @@ import { myContext } from "../Context";
 import "./Style/Home.css";
 
 export default function Home() {
-  const { products, setProducts,  setIsLoggedIn } = useContext(myContext);
+  const { products, setProducts, setIsLoggedIn } = useContext(myContext);
   const [loading, setLoading] = useState(false);
   const nav = useNavigate();
 
@@ -19,7 +20,15 @@ export default function Home() {
           withCredentials: true,
         }
       );
-      setProducts(response.data.allProducts);
+
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+      const updatedProducts = response.data.allProducts.map(product => ({
+        ...product,
+        inCart: cartItems.includes(product._id),
+      }));
+
+      setProducts(updatedProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
@@ -46,11 +55,13 @@ export default function Home() {
         }
       );
       if (response.status === 200) {
-        // Toggle inCart property of the product
+        const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
         const updatedProducts = products.map(product =>
           product._id === productId ? { ...product, inCart: true } : product
         );
         setProducts(updatedProducts);
+        const updatedCartItems = [...cartItems, productId];
+        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
         alert("Product added to cart successfully");
       }
     } catch (error) {
@@ -69,12 +80,13 @@ export default function Home() {
         data: { productId },
         withCredentials: true,
       });
-      console.log("resp",response);
-      // Toggle inCart property of the product
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
       const updatedProducts = products.map(product =>
         product._id === productId ? { ...product, inCart: false } : product
       );
       setProducts(updatedProducts);
+      const updatedCartItems = cartItems.filter(item => item !== productId);
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
       alert("Product removed from cart successfully");
     } catch (err) {
       console.error("Error removing product from cart:", err);
@@ -99,7 +111,12 @@ export default function Home() {
           withCredentials: true,
         }
       );
-      setProducts(response.data);
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      const updatedProducts = response.data.map(product => ({
+        ...product,
+        inCart: cartItems.includes(product._id),
+      }));
+      setProducts(updatedProducts);
     } catch (error) {
       console.error(`Error fetching ${category} products:`, error);
     } finally {
@@ -154,4 +171,3 @@ export default function Home() {
     </div>
   );
 }
-
