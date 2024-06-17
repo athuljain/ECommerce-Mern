@@ -60,6 +60,7 @@ export default function Register() {
         className="reg-input"
         type="email"
         placeholder="Email"
+        
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
@@ -69,6 +70,7 @@ export default function Register() {
         className="reg-input"
         type="password"
         placeholder="Password"
+        required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />{" "}
@@ -77,6 +79,7 @@ export default function Register() {
         className="reg-input"
         type="password"
         placeholder="Confirm Password"
+        required
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />{" "}
