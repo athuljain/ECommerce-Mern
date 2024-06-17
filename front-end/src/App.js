@@ -34,13 +34,9 @@ function App() {
 
   const [token, setToken] = useState(null);
   const [products, setProducts] = useState([]);
-
   const [userToken, setUserToken] = useState(null);
-
   const [specificProduct, setSpecificProduct] = useState({});
-
   const [cartItems, setCartItems] = useState([]); // Initialize cartItems state
-
   const [inCart, setInCart] = useState(false); // Define state to check if the product is in the cart
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   console.log(isLoggedIn);
