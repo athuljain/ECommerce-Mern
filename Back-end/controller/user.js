@@ -126,6 +126,10 @@ const specificProduct = async (req, res) => {
   }
 };
 
+
+
+
+
 // Add to Cart
 const addToCart = async (req, res) => {
   try {
@@ -149,11 +153,14 @@ const addToCart = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // Add product to user's cart if it's not already there
-    if (!user.cart.includes(productId)) {
-      user.cart.push(productId);
-      await user.save();
+    // Add product to user's cart with quantity if it's not already there
+    const productIndex = user.cart.findIndex(item => item.productId.toString() === productId);
+    if (productIndex === -1) {
+      user.cart.push({ productId, qty: 1 });
+    } else {
+      user.cart[productIndex].qty += 1;
     }
+    await user.save();
 
     res.status(200).json({ message: "Product added to cart", cart: user.cart });
   } catch (error) {
@@ -161,6 +168,12 @@ const addToCart = async (req, res) => {
     res.status(500).json({ error: "Server error", errorMessage: error.message });
   }
 };
+
+
+
+
+
+
 
 // Get Cart
 const getCart = async (req, res) => {
