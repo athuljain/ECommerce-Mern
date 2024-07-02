@@ -6,6 +6,35 @@ const User = require("../model/userModel");
 const Product = require("../model/productModel");
 
 
+// // User Registration
+// const userRegister = async (req, res) => {
+//   try {
+//     const { name, email, password, confirmPassword } = req.body;
+
+//     if (!name || !email || !password || !confirmPassword) {
+//       return res.status(400).send("Please fill in all fields");
+//     }
+
+//     if (password !== confirmPassword) {
+//       return res.status(400).send("Passwords do not match");
+//     }
+
+//     const userExists = await User.findOne({ email });
+//     if (userExists) {
+//       return res.status(400).send("User already exists");
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const user = new User({ name, email, password: hashedPassword });
+//     await user.save();
+//     res.status(201).send("User registered successfully");
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Registration failed");
+//   }
+// };
+
+
 // User Registration
 const userRegister = async (req, res) => {
   try {
@@ -33,6 +62,7 @@ const userRegister = async (req, res) => {
     res.status(500).send("Registration failed");
   }
 };
+
 
 // User Login
 const userLogin = async (req, res) => {

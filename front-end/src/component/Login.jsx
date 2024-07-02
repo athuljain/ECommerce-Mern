@@ -58,7 +58,8 @@ export default function Login() {
     }
     } catch (error) {
       console.log(error.response.data);
-      alert("Login failed!!!");
+      // alert("Login failed!!!");
+      toast.error("Registration failed");
     }
   };
 
