@@ -4,35 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../model/userModel");
 const Product = require("../model/productModel");
-
-
-// // User Registration
-// const userRegister = async (req, res) => {
-//   try {
-//     const { name, email, password, confirmPassword } = req.body;
-
-//     if (!name || !email || !password || !confirmPassword) {
-//       return res.status(400).send("Please fill in all fields");
-//     }
-
-//     if (password !== confirmPassword) {
-//       return res.status(400).send("Passwords do not match");
-//     }
-
-//     const userExists = await User.findOne({ email });
-//     if (userExists) {
-//       return res.status(400).send("User already exists");
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     const user = new User({ name, email, password: hashedPassword });
-//     await user.save();
-//     res.status(201).send("User registered successfully");
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Registration failed");
-//   }
-// };
+const { default: mongoose } = require("mongoose");
 
 
 // User Registration
@@ -156,10 +128,6 @@ const specificProduct = async (req, res) => {
   }
 };
 
-
-
-
-
 // Add to Cart
 const addToCart = async (req, res) => {
   try {
@@ -183,13 +151,13 @@ const addToCart = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // Add product to user's cart with quantity if it's not already there
-    const productIndex = user.cart.findIndex(item => item.productId.toString() === productId);
-    if (productIndex === -1) {
-      user.cart.push({ productId, qty: 1 });
-    } else {
-      user.cart[productIndex].qty += 1;
+    // Check if the product is already in the user's cart
+    if (user.cart.includes(productId)) {
+      return res.status(200).json({ message: "Product is already in the cart" });
     }
+
+    // Add product to user's cart if it's not already there
+    user.cart.push(productId);
     await user.save();
 
     res.status(200).json({ message: "Product added to cart", cart: user.cart });
@@ -198,10 +166,6 @@ const addToCart = async (req, res) => {
     res.status(500).json({ error: "Server error", errorMessage: error.message });
   }
 };
-
-
-
-
 
 
 
