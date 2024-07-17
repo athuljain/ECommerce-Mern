@@ -1,0 +1,21 @@
+
+.user-details-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  
+  .user-details-container h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .user-details-container p {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  

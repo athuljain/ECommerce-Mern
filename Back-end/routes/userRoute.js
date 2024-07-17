@@ -22,5 +22,5 @@ app.get("/products/category/:category", userMiddleware, user.getCategoryWise);
 app.post("/addToCart", user.addToCart); 
 app.get("/cart", user.getCart);
 app.delete("/cart",user.removeFromCart)
-
+app.get("/details", userMiddleware, user.userDetails);
 module.exports = app;

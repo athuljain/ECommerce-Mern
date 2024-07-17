@@ -43,7 +43,7 @@ export default function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Set user token in context
+      // Set user token in 
       setUserToken(data.token);
 
       // Update login status
