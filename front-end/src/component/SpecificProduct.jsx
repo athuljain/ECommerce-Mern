@@ -192,6 +192,8 @@ export default function SpecificProductPage() {
           setInCart(true);
           alert("Product added to cart");
         }
+
+        
       } else {
         // If the product is already in cart, do nothing
       }

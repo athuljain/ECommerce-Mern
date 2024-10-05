@@ -30,7 +30,16 @@ const userSchema = new mongoose.Schema({
   },
   password: String,
   confirmPassword: String,
-  cart: [
+
+userContact:[
+  {
+    phoneNumber:Number,
+    whatsappNumber:Number
+    
+  }
+],
+
+cart: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
