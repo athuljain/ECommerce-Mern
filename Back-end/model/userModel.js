@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema({
   },
   password: String,
   confirmPassword: String,
-
 userContact:[
   {
     phoneNumber:Number,
@@ -38,7 +37,6 @@ userContact:[
     
   }
 ],
-
 cart: [
     {
       type: mongoose.Schema.Types.ObjectId,
