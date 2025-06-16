@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
+
 
 const userMiddleware = (req, res, next) => {
   //const token = req.cookies.token;
@@ -11,6 +11,7 @@ const userMiddleware = (req, res, next) => {
       .status(401)
       .json({ message: "Unauthorized - No token provided" });
   }
+  
   try {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
